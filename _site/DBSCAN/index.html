@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>How DBSCAN works and why should we use it? – Kelvin Salton do Prado – Machine Learning Engineer</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="
+" />
+    <meta property="og:description" content="
+" />
+    
+    <meta name="author" content="Kelvin Salton do Prado" />
+
+    
+    <meta property="og:title" content="How DBSCAN works and why should we use it?" />
+    <meta property="twitter:title" content="How DBSCAN works and why should we use it?" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Kelvin Salton do Prado - Machine Learning Engineer" href="/feed.xml" />
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://avatars0.githubusercontent.com/u/1009397?s=400&u=01f980f0e5eefce5e8f4721489b732db2cb726d7&v=4" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Kelvin Salton do Prado</a></h1>
+            <p class="site-description">Machine Learning Engineer</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>How DBSCAN works and why should we use it?</h1>
+
+  <div class="entry">
+    <p><img src="/images/cluster-comparison.png" alt="Cluster Comparison" style="width: 600px;" /></p>
+
+<p><strong>Density-based spatial clustering of applications with noise (DBSCAN)</strong> is a well-known data clustering algorithm that is commonly used in data mining and machine learning.</p>
+
+<p>Based on a set of points (let’s think in a bidimensional space as exemplified in the figure), DBSCAN groups together points that are close to each other based on a distance measurement (usually Euclidean distance) and a minimum number of points. It also marks as outliers the points that are in low-density regions.</p>
+
+<h3 id="parameters">Parameters:</h3>
+
+<p>The DBSCAN algorithm basically requires 2 parameters:</p>
+<blockquote>
+  <p><strong>eps</strong>: specifies how close points should be to each other to be considered a part of a cluster. It means that if the distance between two points is lower or equal to this value (eps), these points are considered neighbors.
+<strong>minPoints</strong>: the minimum number of points to form a dense region. For example, if we set the minPoints parameter as 5, then we need at least 5 points to form a dense region.</p>
+</blockquote>
+
+<h3 id="parameter-estimation">Parameter estimation:</h3>
+
+<p>The parameter estimation is a problem for every data mining task. To choose good parameters we need to understand how they are used and have at least a basic previous knowledge about the data set that will be used.</p>
+<blockquote>
+  <p><strong>eps</strong>: if the eps value chosen is too small, a large part of the data will not be clustered. It will be considered outliers because don’t satisfy the number of points to create a dense region. On the other hand, if the value that was chosen is too high, clusters will merge and the majority of objects will be in the same cluster. The eps should be chosen based on the distance of the dataset (we can use a k-distance graph to find it), but in general small eps values are preferable.
+<strong>minPoints</strong>: As a general rule, a minimum minPoints can be derived from a number of dimensions (D) in the data set, as minPoints ≥ D + 1. Larger values are usually better for data sets with noise and will form more significant clusters. The minimum value for the minPoints must be 3, but the larger the data set, the larger the minPoints value that should be chosen.</p>
+</blockquote>
+
+<p>You can find more about parameter estimation <a href="https://en.wikipedia.org/wiki/DBSCAN#Parameter_estimation">here</a>.</p>
+
+<h3 id="why-should-we-use-dbscan">Why should we use DBSCAN?</h3>
+
+<p>The DBSCAN algorithm should be used to find associations and structures in data that are hard to find manually but that can be relevant and useful to find patterns and predict trends.</p>
+
+<p>Clustering methods are usually used in biology, medicine, social sciences, archaeology, marketing, characters recognition, management systems and so on.</p>
+
+<p>Let’s think in a practical use of DBSCAN. Suppose we have an e-commerce and we want to improve our sales by recommending relevant products to our customers. We don’t know exactly what our customers are looking for but based on a data set we can predict and recommend a relevant product to a specific customer. We can apply the DBSCAN to our data set (based on the e-commerce database) and find clusters based on the products that the users have bought. Using this clusters we can find similarities between customers, for example, the customer A have bought 1 pen, 1 book and 1 scissors and the customer B have bought 1 book and 1 scissors, then we can recommend 1 pen to the customer B. This is just a little example of use of DBSCAN, but it can be used in a lot of applications in several areas.</p>
+
+<h3 id="how-can-we-easily-implement-it">How can we easily implement it?</h3>
+
+<p>As I already wrote (tip: don’t believe in everything I write) the DBSCAN is a well-known algorithm, therefore, you don’t need to worry about implement it yourself. You can use one of the libraries/packages that can be found on the internet. Here is a list of links that you can find the DBSCAN implementation: <a href="https://www.mathworks.com/matlabcentral/fileexchange/52905-dbscan-clustering-algorithm">Matlab,</a> <a href="https://cran.r-project.org/web/packages/dbscan/index.html">R,</a> <a href="https://github.com/mhahsler/dbscan">R,</a> <a href="http://scikit-learn.org/stable/modules/generated/sklearn.cluster.DBSCAN.html">Python,</a> <a href="https://github.com/choffstein/dbscan">Python</a>.</p>
+
+<p>I also have developed an application (in Portuguese) to explain how DBSCAN works in a didactically way. The application was written in C++ and you can find it on <a href="https://github.com/kelvins/DBSCAN">Github</a>.</p>
+
+<h3 id="references">References:</h3>
+<blockquote>
+  <p>Ester, M., Kriegel, H. P., Sander, J., &amp; Xu, X. (1996, August). A density-based algorithm for discovering clusters in large spatial databases with noise. In <em>Kdd</em> (Vol. 96, №34, pp. 226–231).
+DBSCAN: <a href="https://en.wikipedia.org/wiki/DBSCAN">https://en.wikipedia.org/wiki/DBSCAN</a></p>
+</blockquote>
+
+  </div>
+
+  <div class="date">
+    Written on April  1, 2017
+  </div>
+
+  
+</article>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/kelvins"><i class="svg-icon github"></i></a>
+
+<a href="https://www.linkedin.com/in/kelvinsprado"><i class="svg-icon linkedin"></i></a>
+
+
+<a href="https://www.twitter.com/kelvinsprado"><i class="svg-icon twitter"></i></a>
+<a href="http://stackoverflow.com/users/4946821/kelvins"><i class="svg-icon stackoverflow"></i></a>
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+  </body>
+</html>
