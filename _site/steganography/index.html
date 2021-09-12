@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Steganography - Hiding an image inside another – Kelvin Salton do Prado – Machine Learning Engineer</title>
+
+        <meta charset="utf-8" />
+    <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0'>
+
+    
+    <meta name="description" content="
+" />
+    <meta property="og:description" content="
+" />
+    
+    <meta name="author" content="Kelvin Salton do Prado" />
+
+    
+    <meta property="og:title" content="Steganography - Hiding an image inside another" />
+    <meta property="twitter:title" content="Steganography - Hiding an image inside another" />
+    
+
+    <!--[if lt IE 9]>
+      <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+    <link rel="alternate" type="application/rss+xml" title="Kelvin Salton do Prado - Machine Learning Engineer" href="/feed.xml" />
+
+    <!-- Created with Jekyll Now - http://github.com/barryclark/jekyll-now -->
+  </head>
+
+  <body>
+    <div class="wrapper-masthead">
+      <div class="container">
+        <header class="masthead clearfix">
+          <a href="/" class="site-avatar"><img src="https://avatars0.githubusercontent.com/u/1009397?s=400&u=01f980f0e5eefce5e8f4721489b732db2cb726d7&v=4" /></a>
+
+          <div class="site-info">
+            <h1 class="site-name"><a href="/">Kelvin Salton do Prado</a></h1>
+            <p class="site-description">Machine Learning Engineer</p>
+          </div>
+
+          <nav>
+            <a href="/">Blog</a>
+          </nav>
+        </header>
+      </div>
+    </div>
+
+    <div id="main" role="main" class="container">
+      <article class="post">
+  <h1>Steganography - Hiding an image inside another</h1>
+
+  <div class="entry">
+    <p><img src="/images/steganography.jpeg" alt="Steganography" style="width: 600px;" /></p>
+
+<p>In this story, we will learn some image processing concepts and how to hide an image inside another image file.</p>
+
+<p>To provide a functional example, it was implemented a <a href="https://github.com/kelvins/steganography/blob/master/steganography.py"><strong>Python</strong> class</a> to perform the procedures mentioned in the end of this story.</p>
+
+<p>First of all, let’s understand what is steganography, digital images, pixels, and color models.</p>
+
+<h3 id="what-is-steganography">What is steganography?</h3>
+<blockquote>
+  <p><a href="https://en.wikipedia.org/wiki/Steganography">Steganography</a> is the practice of concealing a file, message, image, or video within another file, message, image, or video.</p>
+</blockquote>
+
+<h3 id="what-is-the-advantage-of-steganography-over-cryptography">What is the advantage of steganography over cryptography?</h3>
+<blockquote>
+  <p>The advantage of steganography over <a href="https://en.wikipedia.org/wiki/Cryptography">cryptography</a> alone is that the intended secret message does not attract attention to itself as an object of scrutiny. Plainly visible encrypted messages, no matter how unbreakable they are, arouse interest and may in themselves be incriminating in countries in which <a href="https://en.wikipedia.org/wiki/Encryption">encryption</a> is illegal.</p>
+</blockquote>
+
+<p>In other words, steganography is more discreet than cryptography when we want to send a secret information. On the other hand, the hidden message is easier to extract.</p>
+
+<h3 id="what-is-a-digital-image">What is a digital image?</h3>
+
+<p>Ok, now that we know the basics of steganography, let’s learn some simple image processing concepts.</p>
+
+<p>Before understanding how can we hide an image inside another, we need to understand what a digital image is.</p>
+
+<p>We can describe a <strong>digital image</strong> as a finite set of digital values, called pixels. Pixels are the smallest individual element of an image, holding values that represent the brightness of a given color at any specific point. So we can think of an image as a matrix (or a two-dimensional array) of pixels which contains a fixed number of rows and columns.</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*-Vreo05sajRL8dRibXIWXA.png" alt="" /></p>
+
+<p>When using the “<strong>digital image</strong>” term here, we are referencing to the “<strong>raster graphics</strong>”, which are basically a dot matrix data structure, representing a grid of pixels, which in turn can be stored in image files with varying formats. You can read more about <a href="https://en.wikipedia.org/wiki/Digital_image">digital images</a>, <a href="https://en.wikipedia.org/wiki/Raster_graphics">raster graphics</a>, and <a href="https://en.wikipedia.org/wiki/Bitmap">bitmaps</a> at the <a href="https://en.wikipedia.org/wiki/Main_Page">Wikipedia</a> website.</p>
+
+<h3 id="pixel-concept-and-color-models">Pixel concept and color models</h3>
+
+<p>As already mentioned, pixels are the smallest individual element of an image. So, each pixel is a sample of an original image. It means, more samples provide more accurate representations of the original. The <a href="https://en.wikipedia.org/wiki/Intensity_(physics)">intensity</a> of each pixel is variable. In color imaging systems, a color is typically represented by three or four component intensities such as <a href="https://en.wikipedia.org/wiki/RGB_color_model">red, green, and blue</a>, or <a href="https://en.wikipedia.org/wiki/CMYK_color_model">cyan, magenta, yellow, and black</a>.</p>
+
+<p>Here, we will work with the <a href="https://en.wikipedia.org/wiki/RGB_color_model">RGB color model</a>. As you can imagine, the RGB color model has 3 channels, red, green and blue.</p>
+<blockquote>
+  <p>The <strong>RGB color model</strong> is an additive <a href="https://en.wikipedia.org/wiki/Color_model">color model</a> in which red, green and blue light are added together in various ways to reproduce a broad array of colors. The name of the model comes from the initials of the three additive primary colors, red, green, and blue. The main purpose of the RGB color model is for the sensing, representation and display of images in electronic systems, such as televisions and computers, though it has also been used in conventional <a href="https://en.wikipedia.org/wiki/Photography">photography</a>.</p>
+</blockquote>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*tcTa2Cst3FXkDpxTg-_1mA.jpeg" alt="" /></p>
+
+<p>So, each pixel from the image is composed of 3 values (red, green, blue) which are <a href="https://en.wikipedia.org/wiki/8-bit">8-bit</a> values (the range is 0–255).</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*Mt3yDPhS3aq_spPfWTW9BA.png" alt="" /></p>
+
+<p>As we can see in the image above, for each pixel we have three values, which can be represented in <a href="https://en.wikipedia.org/wiki/Binary_code">binary code</a> (the computer language).</p>
+
+<p>When working with binary codes, we have more significant bits and less significant bits, as you can see in the image below.</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*YQGZLBpDn2U9Bu8sZphzXQ.jpeg" alt="" /></p>
+
+<p>The <strong>leftmost</strong> bit is the <strong>most significant bit</strong>. If we change the leftmost bit it will have a large impact on the final value. For example, if we change the leftmost bit from <strong>1</strong> to <strong>0</strong> (<strong>11111111</strong> to <strong>01111111</strong>) it will change the decimal value from <strong>255</strong> to <strong>127</strong>.</p>
+
+<p>On the other hand, the <strong>rightmost</strong> bit is the <strong>less significant bit</strong>. If we change the rightmost bit it will have less impact on the final value. For example, if we change the leftmost bit from <strong>1</strong> to <strong>0</strong> (<strong>11111111</strong> to <strong>11111110</strong>) it will change the decimal value from <strong>255</strong> to <strong>254</strong>. Note that the rightmost bit will change only 1 in a range of 256 (it represents less than 1%).</p>
+
+<p><strong>Summarizing:</strong> each pixel has three values (RGB), each RGB value is 8-bit (it means we can store 8 binary values) and the rightmost bits are less significant. So, if we change the rightmost bits it will have a small visual impact on the final image. This is the steganography key to hide an image inside another. Change the less significant bits from an image and include the most significant bits from the other image.</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*kpDa0jt6ftSce4b4DQA2MQ.png" alt="" /></p>
+
+<h3 id="hiding-an-image-inside-another">Hiding an image inside another</h3>
+
+<p>Since we understood the pixel concept and color models, we can talk about the procedure of hiding an image inside another.</p>
+
+<p>In this section, we can find a step-by-step of the hide and reveal process using Python code.</p>
+
+<p><strong>Hiding an Image</strong>:</p>
+
+<ol>
+  <li>To hide an image inside another, the image which will be hidden needs to have at most the same size of the image which will hide it.</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/c0859873c85b6dc4cbc79aa899722d5c.js?file=steganography.py"></script>
+
+<ol>
+  <li>We must create two loops to go through all rows and columns (actually each pixel) from the images.</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/c7fe8934ea5867b5467798c840c59edb.js?file=steganography.py"></script>
+
+<ol>
+  <li>So, we get the RGB from the image 1 and image 2 as binary values:</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/c100b72bf19c2200233f656c425c53ff.js?file=steganography.py"></script>
+
+<p>We can use the <strong>__int_to_bin</strong> method to convert a decimal value to a binary value:</p>
+
+<script src="https://gist.githubusercontent.com/kelvins/63e3bba3c7269c2f60113ebd5747d19a.js?file=steganography.py"></script>
+
+<ol>
+  <li>We merge the most significant bits from the image 1 with the most significant bits from the image 2:</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/549df16cd999d44387320bc7083ebab5.js?file=steganography.py"></script>
+
+<p>Using the <strong>__merge_rgb</strong> method:</p>
+
+<script src="https://gist.githubusercontent.com/kelvins/983bc8c775944167cece866f48848226.js?file=steganography.py"></script>
+
+<p>Note that the <strong>__merge_rgb</strong> function is using the 4 most significant bits from each image, but it could be changed. Keep in mind that using fewer bits from the hidden image will result in low quality of the recovery image.</p>
+
+<ol>
+  <li>Finally, we convert the new binary value to a decimal value:</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/5b94599074d89cb8cbb30cda44f621ac.js?file=steganography.py"></script>
+
+<p>Using the <strong>__bin_to_int</strong> method:</p>
+
+<script src="https://gist.githubusercontent.com/kelvins/8b95893dd1c7ab2e56bfb9c21f8ccfe5.js?file=steganography.py"></script>
+
+<p>And set it to a new pixel position from the resulted image.</p>
+
+<p>Now we have an image hidden inside another image.</p>
+
+<p>The entire <strong>merge</strong> method can be found <a href="https://github.com/kelvins/steganography/blob/master/steganography.py#L49">here</a>.</p>
+
+<p><strong>Revealing an Image</strong>:</p>
+
+<ol>
+  <li>
+    <p>To reveal an image, we must know how many bits were used to hide the image. In this case, we are using a fixed number of 4 bits.</p>
+  </li>
+  <li>
+    <p>First of all, we need to create two loops to go through all pixels from the image:</p>
+  </li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/4dd53121a80b8a02841157368780b50c.js?file=steganography.py"></script>
+
+<ol>
+  <li>So, we extract each RGB channel as a binary value from the current pixel:</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/dccb4376f3b6c86f789dfa3a77e94703.js?file=steganography.py"></script>
+
+<p>Using the <strong>__int_to_bin</strong> method:</p>
+
+<script src="https://gist.githubusercontent.com/kelvins/5e07d625af1ba407c54dfd76fb78854b.js?file=steganography.py"></script>
+
+<ol>
+  <li>Then, we create a new RGB value by concatenating only the 4 rightmost bits from the current pixel with zero values (to create a new 8-bit value):</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/fe34b42f0819b114398b905cf70a34b4.js?file=steganography.py"></script>
+
+<ol>
+  <li>Finally, we convert the binary value to a decimal value and set it to the current pixel in the new image:</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/dbc9300cd3433148f8cff465bb9139fe.js?file=steganography.py"></script>
+
+<ol>
+  <li>The developed algorithm has only one more last step to remove the black borders when the hidden image was smaller than the image which is hiding it.</li>
+</ol>
+
+<script src="https://gist.githubusercontent.com/kelvins/916b0e236836252a463a878c1742bce9.js?file=steganography.py"></script>
+
+<p>And with this simple code, we can extract an image from another.</p>
+
+<p>The entire <strong>unmerge</strong> method can be found <a href="https://github.com/kelvins/steganography/blob/master/steganography.py#L88">here</a>.</p>
+
+<p><strong>You can check out the result in the following image</strong>:</p>
+
+<p>The left upper image is the image that will hide the right upper image. The left lower image is the two images merged and the right lower image is the extracted (unmerged) image.</p>
+
+<p><img src="https://cdn-images-1.medium.com/max/2000/1*4paRMea_BGeNpJ2VzFGCoA.png" alt="" /></p>
+
+<p>As you can see in the image above, we lost some image quality in the process, but this does not interfere with image comprehension.</p>
+
+<p>You can find the <strong>Steganography Python code</strong> on <strong>Github</strong>: <a href="https://github.com/kelvins/steganography">https://github.com/kelvins/steganography</a></p>
+
+  </div>
+
+  <div class="date">
+    Written on March 18, 2018
+  </div>
+
+  
+</article>
+
+    </div>
+
+    <div class="wrapper-footer">
+      <div class="container">
+        <footer class="footer">
+          
+
+
+
+<a href="https://github.com/kelvins"><i class="svg-icon github"></i></a>
+
+<a href="https://www.linkedin.com/in/kelvinsprado"><i class="svg-icon linkedin"></i></a>
+
+
+<a href="https://www.twitter.com/kelvinsprado"><i class="svg-icon twitter"></i></a>
+<a href="http://stackoverflow.com/users/4946821/kelvins"><i class="svg-icon stackoverflow"></i></a>
+
+
+        </footer>
+      </div>
+    </div>
+
+    
+
+  </body>
+</html>
